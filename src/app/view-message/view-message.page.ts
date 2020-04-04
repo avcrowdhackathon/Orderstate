@@ -8,7 +8,7 @@ import { DataService } from '../@core/services/data.service';
   styleUrls: ['./view-message.page.scss'],
 })
 export class ViewMessagePage implements OnInit {
-  public message: Order.Order;
+  public order: Order.Order;
 
   constructor(
     private data: DataService,
@@ -17,7 +17,7 @@ export class ViewMessagePage implements OnInit {
 
   async ngOnInit() {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
-    this.message = await this.data.getOrder(id).toPromise();
+    this.order = await this.data.getOrder(id).toPromise();
   }
 
   getBackButtonText() {

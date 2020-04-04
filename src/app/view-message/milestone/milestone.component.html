@@ -1,0 +1,13 @@
+<ion-item>
+  <ion-icon [name]="status.icon" [color]="status.color"></ion-icon>
+  <ion-label class="ion-text-wrap">
+    <h2>
+      {{milestone.name}}
+      <span class="date">
+        <ion-note>{{ milestone.startedAt|date }}</ion-note>
+      </span>
+    </h2>
+    <h3>{{assignee.name}}</h3>
+    <div *ngIf="milestone.location">{{milestone.location.name}}</div>
+  </ion-label>
+</ion-item>

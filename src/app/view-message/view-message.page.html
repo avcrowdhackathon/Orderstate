@@ -6,32 +6,28 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" *ngIf="message">
+<ion-content [fullscreen]="true" *ngIf="order">
   <ion-item>
-    <ion-icon name="person-circle" color="primary"></ion-icon>
+    <ion-icon name="boat-outline" color="tertiary"></ion-icon>
     <ion-label class="ion-text-wrap">
       <h2>
         Order Details
         <span class="date">
-          <ion-note>{{ message.createdDate|date }}</ion-note>
+          <ion-note>{{ order.createdDate|date }}</ion-note>
         </span>
       </h2>
-      <h3>{{ message.id }}</h3>
+      <h3>{{ order.id }}</h3>
     </ion-label>
   </ion-item>
 
-  <div class="ion-padding">
-    <pre>{{ message | json }}</pre>
-  </div>
+  <ng-container *ngFor="let ms of order.mileStones">
+    <app-milestone [milestone]="ms" [participants]="order.participants"></app-milestone>
+  </ng-container>
 </ion-content>
 
 <ion-footer>
-  <ion-toolbar>
-    <ion-buttons>
-      <ion-button block large fill="solid" color="success">
-        <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
-        Complete
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
+  <ion-button expand="block" size="large" fill="solid" color="success">
+    <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+    Finished
+  </ion-button>
 </ion-footer>

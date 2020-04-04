@@ -33,4 +33,8 @@ export class HomePage implements OnInit {
     this.orders$ = this.dataService.getOrders(this.params);
   }
 
+  async logout() {
+    await this.authService.logout();
+  }
+
 }

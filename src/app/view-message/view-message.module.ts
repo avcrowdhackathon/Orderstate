@@ -1,11 +1,12 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
+import { MilestoneComponent } from './milestone/milestone.component';
+import { ViewMessagePageRoutingModule } from './view-message-routing.module';
 import { ViewMessagePage } from './view-message.page';
 
-import { IonicModule } from '@ionic/angular';
 
-import { ViewMessagePageRoutingModule } from './view-message-routing.module';
 
 @NgModule({
   imports: [
@@ -14,6 +15,9 @@ import { ViewMessagePageRoutingModule } from './view-message-routing.module';
     IonicModule,
     ViewMessagePageRoutingModule
   ],
-  declarations: [ViewMessagePage]
+  declarations: [
+    ViewMessagePage,
+    MilestoneComponent
+  ]
 })
 export class ViewMessagePageModule {}
