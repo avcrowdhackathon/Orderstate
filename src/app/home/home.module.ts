@@ -1,18 +1,16 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-
+import { IonicModule } from '@ionic/angular';
 import { HomePage } from './home.page';
-import { MessageComponentModule } from '../message/message.module';
+import { OrderComponent } from './order/order.component';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    MessageComponentModule,
     RouterModule.forChild([
       {
         path: '',
@@ -20,6 +18,9 @@ import { MessageComponentModule } from '../message/message.module';
       }
     ])
   ],
-  declarations: [HomePage]
+  declarations: [
+    OrderComponent,
+    HomePage,
+  ]
 })
-export class HomePageModule {}
+export class HomePageModule { }

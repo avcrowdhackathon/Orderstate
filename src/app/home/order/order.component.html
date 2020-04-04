@@ -1,0 +1,14 @@
+<ion-item *ngIf="order" [routerLink]="'/order/' + order.id" [detail]="false">
+  <div slot="start" [class]="!order.read ? 'dot dot-unread' : 'dot'"></div>
+  <ion-label class="ion-text-wrap">
+    <h2>
+      {{milestone}}
+      <span class="date">
+        <ion-note>{{order.createdDate | date}}</ion-note>
+        <ion-icon name="time-outline" size="small" *ngIf="order.status === 'ACTIVE'"></ion-icon>
+      </span>
+    </h2>
+    <h3>{{participants}}</h3>
+    <p>{{order.description}}</p>
+  </ion-label>
+</ion-item>

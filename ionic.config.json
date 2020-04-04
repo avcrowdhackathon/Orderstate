@@ -1,5 +1,7 @@
 {
-  "name": "mobile",
-  "integrations": {},
+  "name": "orderstate",
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }
