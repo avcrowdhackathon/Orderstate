@@ -1,16 +1,23 @@
 <ion-content>
   <div style="padding:3rem">
+    <div class="logo">
+      <img src="https://app-test.orderstate.com/content/d2956eb68a5649df6fcd2f9382f47ffe.png" alt="">
+    </div>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm.value)">
-      <img style="margin-bottom:1rem;height:85px" src="https://app-test.orderstate.com/content/d2956eb68a5649df6fcd2f9382f47ffe.png" alt="">
-      <ion-item>
-        <ion-input name="username" formControlName="username" type="text" placeholder="username">
-        </ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input name="password" formControlName="password" type="password" placeholder="password">
-        </ion-input>
-      </ion-item>
-      <ion-button type="submit" expand="block">Login</ion-button>
+      <ion-list>
+        <ion-item>
+          <ion-label position="floating">username</ion-label>
+          <ion-input name="username" formControlName="username">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">password</ion-label>
+          <ion-input name="password" formControlName="password" type="password">
+          </ion-input>
+        </ion-item>
+      </ion-list>
+      <ion-button type="submit" size="default" expand="block" style="margin-top: 1rem;">Login</ion-button>
     </form>
   </div>
 </ion-content>
