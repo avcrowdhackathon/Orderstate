@@ -3,8 +3,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { MilestoneComponent } from './milestone/milestone.component';
-import { ViewMessagePageRoutingModule } from './view-message-routing.module';
-import { ViewMessagePage } from './view-message.page';
+import { ViewOrderPageRoutingModule } from './view-order-routing.module';
+import { ViewOrderPage } from './view-order.page';
 
 
 
@@ -13,11 +13,11 @@ import { ViewMessagePage } from './view-message.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    ViewMessagePageRoutingModule
+    ViewOrderPageRoutingModule
   ],
   declarations: [
-    ViewMessagePage,
+    ViewOrderPage,
     MilestoneComponent
   ]
 })
-export class ViewMessagePageModule {}
+export class ViewOrderPageModule {}

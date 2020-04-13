@@ -3,12 +3,14 @@ import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../@core/services/data.service';
 
 @Component({
-  selector: 'app-view-message',
-  templateUrl: './view-message.page.html',
-  styleUrls: ['./view-message.page.scss'],
+  selector: 'app-view-order',
+  templateUrl: './view-order.page.html',
+  styleUrls: ['./view-order.page.scss'],
 })
-export class ViewMessagePage implements OnInit {
-  public order: Order.Order;
+export class ViewOrderPage implements OnInit {
+
+  order: Order.Order;
+  currentPage = 'milestones';
 
   constructor(
     private data: DataService,
@@ -18,6 +20,10 @@ export class ViewMessagePage implements OnInit {
   async ngOnInit() {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.order = await this.data.getOrder(id).toPromise();
+  }
+
+  showPage(event) {
+    this.currentPage = event.target.value;
   }
 
   getBackButtonText() {

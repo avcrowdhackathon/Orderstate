@@ -1,0 +1,57 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button [text]="getBackButtonText()" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Order: {{order?.id}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-toolbar>
+  <ion-segment (ionChange)="showPage($event)" [value]="currentPage">
+    <ion-segment-button value="milestones">
+      Milestones
+    </ion-segment-button>
+    <ion-segment-button value="comments">
+      Comments
+    </ion-segment-button>
+    <ion-segment-button value="activity">
+      Activity
+    </ion-segment-button>
+  </ion-segment>
+</ion-toolbar>
+
+<ion-content [fullscreen]="true">
+  <ng-container *ngIf="currentPage === 'milestones'">
+    <ng-container *ngIf="order">
+      <ion-item>
+        <ion-icon name="boat-outline" color="tertiary"></ion-icon>
+        <ion-label class="ion-text-wrap">
+          <h2>
+            Order Details
+            <span class="date">
+              <ion-note>{{ order.createdDate|date }}</ion-note>
+            </span>
+          </h2>
+          <h3>{{ order.id }}</h3>
+        </ion-label>
+      </ion-item>
+      <ng-container *ngFor="let ms of order.mileStones">
+        <app-milestone [milestone]="ms" [participants]="order.participants"></app-milestone>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="currentPage === 'comments'">
+    comments
+  </ng-container>
+  <ng-container *ngIf="currentPage === 'activity'">
+    activity
+  </ng-container>
+</ion-content>
+
+<ion-footer *ngIf="currentPage === 'milestones'">
+  <ion-button expand="block" size="large" fill="solid" color="success">
+    <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+    Finished
+  </ion-button>
+</ion-footer>
