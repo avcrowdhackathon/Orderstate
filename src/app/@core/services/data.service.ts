@@ -60,26 +60,26 @@ export class DataService {
     const p = {
       ...{
         page: '0',
-        size: '30',
-        sort: 'me.orderId,desc',
+        size: '10',
+        sort: 'lastModifiedDate,desc',
       }, ...params,
     };
 
-    let _search = '';
+    let search = '';
 
     if (params.term) {
-      _search = `/_search/${params.term}`;
+      search = `/_search/${params.term}`;
     }
 
-
+    const c = {};
     for (const propName in p) {
-      if (p[propName] === null || p[propName] === undefined) {
-        delete p[propName];
+      if (p[propName] !== null && p[propName] !== undefined) {
+        c[propName] = p[propName].toString();
       }
     }
 
     return this.http
-      .get<Order.Order[]>(`${environment.api_url}/orders${_search}`, { params: p })
+      .get<Order.Order[]>(`${environment.api_url}/orders${search}`, { params: c })
       .pipe(
         catchError((err) => {
           this.toastController

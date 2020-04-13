@@ -103,8 +103,8 @@ declare namespace Order {
     status?: 'Draft' | 'Active' | 'Delivered';
     createdFrom?: string;
     createdTo?: string;
-    page?: string;
-    size?: string;
+    page?: number;
+    size?: number;
     sort?: string;
   }
 }

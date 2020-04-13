@@ -20,6 +20,10 @@ const routes: Routes = [{
     {
       path: 'order/:id',
       loadChildren: () => import('./view-message/view-message.module').then(m => m.ViewMessagePageModule)
+    }, {
+      path: '',
+      redirectTo: 'home',
+      pathMatch: 'full'
     }]
   }, {
     path: 'login',
@@ -33,9 +37,9 @@ const routes: Routes = [{
 }];
 
 @NgModule({
-    imports: [
-      RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
-    ],
-    exports: [RouterModule]
-  })
+  imports: [
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+  ],
+  exports: [RouterModule]
+})
 export class AppRoutingModule { }

@@ -17,18 +17,54 @@
       <ion-icon slot="icon-only" name="search"></ion-icon>
     </ion-button>
   </ion-buttons>
-  <ion-searchbar placeholder="Search..."></ion-searchbar>
+  <ion-searchbar (ionChange)="search($event)" placeholder="Search..." debounce="500" animated></ion-searchbar>
 </ion-toolbar>
 
 <ion-content [fullscreen]="true">
   <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
+
   <ion-list>
-    <ng-container *ngIf="(orders$ | async) as orders">
-      <ng-container *ngFor="let order of orders">
-        <app-order-item [order]="order"></app-order-item>
+    <ng-container *ngIf="orders;else ordersLoading">
+      <ng-container *ngIf="orders.length;else noOrders">
+        <ng-container *ngFor="let order of orders">
+          <app-order-item [order]="order"></app-order-item>
+        </ng-container>
       </ng-container>
     </ng-container>
   </ion-list>
+
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content loadingSpinner="circular" loadingText="Loading more orders...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>
+
+<ng-template #ordersLoading>
+  <ion-list>
+    <ion-item *ngFor="let i of [1,2,3,4,5,6,7,8,9,0]">
+      <ion-avatar slot="start">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-avatar>
+      <ion-label>
+        <h3>
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </h3>
+        <p>
+          <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+        </p>
+        <p>
+          <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+        </p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ng-template>
+
+<ng-template #noOrders>
+  <div class="ion-text-center" style="padding-top:3rem;">
+    <ion-icon color="primary" name="barcode-outline" style="font-size: 5rem;"></ion-icon><br>
+    <ion-text color="primary" style="font-size:1.3rem;">No orders found</ion-text>
+  </div>
+</ng-template>

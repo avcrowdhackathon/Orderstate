@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { ActionSheetController, LoadingController } from '@ionic/angular';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { ActionSheetController, IonInfiniteScroll, LoadingController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { AuthService } from '../@core/services/auth.service';
 import { DataService } from '../@core/services/data.service';
@@ -9,11 +9,20 @@ import { DataService } from '../@core/services/data.service';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, AfterViewInit {
 
-  username: any;
+  @ViewChild(IonInfiniteScroll, { static: false }) infiniteScroll: IonInfiniteScroll;
+
   orders$: Observable<Order.Order[]>;
-  params = {};
+  orders: Order.Order[] = null;
+  params: Order.SearchParams = {
+    page: 0,
+    size: 20
+  };
+
+  get username() {
+    return this.authService.user.firstName;
+  }
 
   constructor(
     private dataService: DataService,
@@ -22,14 +31,21 @@ export class HomePage implements OnInit {
     private loadingController: LoadingController
   ) { }
 
-  ngOnInit(): void {
-    this.username = this.authService.user.firstName;
-    this.getOrders();
+  ngAfterViewInit() {
+    this.infiniteScroll.disabled = true;
+  }
+
+  async ngOnInit() {
+    this.params.page = 0;
+    this.orders = await this.dataService.getOrders(this.params).toPromise();
+    this.infiniteScroll.disabled = false;
   }
 
   async refresh(ev) {
-    this.getOrders();
+    this.params.page = 0;
+    this.orders = await this.dataService.getOrders(this.params).toPromise();
     ev.detail.complete();
+    this.infiniteScroll.disabled = false;
   }
 
   async presentActionSheet() {
@@ -60,8 +76,23 @@ export class HomePage implements OnInit {
     await actionSheet.present();
   }
 
-  getOrders() {
-    this.orders$ = this.dataService.getOrders(this.params);
+  async search(event) {
+    this.params.term = event.target.value;
+    this.params.page = 0;
+    this.orders = await this.dataService.getOrders(this.params).toPromise();
+    this.infiniteScroll.disabled = false;
+  }
+
+  async loadData(event) {
+    this.params.page++;
+    const newOrders = await this.dataService.getOrders(this.params).toPromise();
+    this.orders = this.orders.concat(newOrders);
+    setTimeout(() => {
+      event.target.complete();
+      if (newOrders.length < this.params.size) {
+        event.target.disabled = true;
+      }
+    }, 500);
   }
 
   async logout() {

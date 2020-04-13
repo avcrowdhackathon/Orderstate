@@ -23,4 +23,12 @@ export class OrderComponent {
     }
     return 'no active milestone';
   }
+
+  get status() {
+    if (this.order.draft) { return 'draft'; }
+    if (this.order.status === 'DELIVERED') { return 'delivered'; }
+    if ((new Date(this.order.expectedAt)).getTime() < (new Date()).getTime()) { return 'delayed'; }
+    if (this.order.status === 'ACTIVE') { return 'active'; }
+    return 'uknown';
+  }
 }
