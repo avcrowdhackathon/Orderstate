@@ -6,7 +6,8 @@ import { AnonGuard } from './guards/anon.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthTokenInterceptor } from './interceptors/auth-token.interceptor';
 import { throwIfAlreadyLoaded } from './module-import-guard';
-import { AuthResolver, AuthService } from './services/auth.service';
+import { AuthResolver } from './services/auth.resolver';
+import { AuthService } from './services/auth.service';
 import { DataService } from './services/data.service';
 
 @NgModule({

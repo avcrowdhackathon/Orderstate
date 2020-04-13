@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
 import { AuthService } from '../@core/services/auth.service';
 
 @Component({
@@ -10,14 +11,14 @@ import { AuthService } from '../@core/services/auth.service';
 })
 export class LoginComponent implements OnInit {
 
-  loginForm;
+  loginForm:any;
   err: any;
-  loading: boolean;
 
   constructor(
     private authService: AuthService,
     private formBuilder: FormBuilder,
     private router: Router,
+    private loadingController: LoadingController
   ) {
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
@@ -33,7 +34,13 @@ export class LoginComponent implements OnInit {
 
   async onSubmit(credentials) {
     this.err = null;
-    this.loading = true;
+
+    const loading = await this.loadingController.create({
+      message: 'Please wait...',
+      animated: true,
+    });
+    await loading.present();
+
     const resp = await this.authService
       .login(credentials)
       .catch((r) => {
@@ -41,10 +48,12 @@ export class LoginComponent implements OnInit {
       });
 
     this.loginForm.reset();
-    this.loading = false;
+
     if (resp) {
       await this.router.navigate(['/home']);
     }
+
+    await loading.dismiss();
   }
 
 }

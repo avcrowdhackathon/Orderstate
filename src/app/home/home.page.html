@@ -1,8 +1,13 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title (click)="logout()">
-      Welcome {{username}}
+  <ion-toolbar color="primary">
+    <ion-title>
+      orderstate
     </ion-title>
+    <ion-buttons slot="secondary">
+      <ion-button (click)="presentActionSheet()">
+        <ion-icon slot="icon-only" name="person-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
