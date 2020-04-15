@@ -10,6 +10,8 @@ import { CoreModule } from './@core/core.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,7 @@ import { LoginComponent } from './login/login.component';
     IonicModule.forRoot(),
     AppRoutingModule,
     CoreModule.forRoot(),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [
     StatusBar,
