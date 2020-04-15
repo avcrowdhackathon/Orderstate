@@ -1,3 +1,4 @@
+// tslint:disable-next-line: no-namespace
 declare namespace Order {
 
   export interface OrderUi {

@@ -3,11 +3,11 @@
     <ion-buttons slot="start">
       <ion-back-button [text]="getBackButtonText()" defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>Order: {{order?.id}}</ion-title>
+    <ion-title>Order</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-toolbar>
+<ion-toolbar *ngIf="order">
   <ion-segment (ionChange)="showPage($event)" [value]="currentPage">
     <ion-segment-button value="milestones">
       Milestones
@@ -21,33 +21,42 @@
   </ion-segment>
 </ion-toolbar>
 
-<ion-content [fullscreen]="true">
-  <ng-container *ngIf="currentPage === 'milestones'">
-    <ng-container *ngIf="order">
-      <ion-item>
-        <ion-icon name="boat-outline" color="tertiary"></ion-icon>
-        <ion-label class="ion-text-wrap">
-          <h2>
-            Order Details
-            <span class="date">
-              <ion-note>{{ order.createdDate|date }}</ion-note>
-            </span>
-          </h2>
-          <h3>{{ order.id }}</h3>
-        </ion-label>
-      </ion-item>
+<ng-container *ngIf="order; else loader">
+
+  <ion-content *ngIf="currentPage === 'milestones'" [fullscreen]="true">
+    <ion-card color="light">
+      <ion-card-header>
+        <ion-card-subtitle>{{ order.id }}</ion-card-subtitle>
+        <ion-card-title>Order Details</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        Created: <ion-note>{{ order.createdDate|date }}</ion-note>
+      </ion-card-content>
+    </ion-card>
+    <ion-list>
       <ng-container *ngFor="let ms of order.mileStones">
         <app-milestone [milestone]="ms" [participants]="order.participants"></app-milestone>
       </ng-container>
+    </ion-list>
+  </ion-content>
+
+  <ion-content #commentsList *ngIf="currentPage === 'comments'" [fullscreen]="true">
+    <ion-refresher slot="fixed" (ionRefresh)="loadComments($event)">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+    <ng-container *ngIf="comments;else loader">
+      <ion-list>
+        <ng-container *ngFor="let comment of comments; trackBy:commentsTrackBy">
+          <app-comment [comment]="comment"></app-comment>
+        </ng-container>
+      </ion-list>
     </ng-container>
-  </ng-container>
-  <ng-container *ngIf="currentPage === 'comments'">
-    comments
-  </ng-container>
-  <ng-container *ngIf="currentPage === 'activity'">
+  </ion-content>
+
+  <ion-content *ngIf="currentPage === 'activity'" [fullscreen]="true">
     activity
-  </ng-container>
-</ion-content>
+  </ion-content>
+</ng-container>
 
 <ion-footer *ngIf="currentPage === 'milestones'">
   <ion-button expand="block" size="large" fill="solid" color="success">
@@ -55,3 +64,40 @@
     Finished
   </ion-button>
 </ion-footer>
+
+<ion-footer *ngIf="currentPage === 'comments'">
+  <ion-toolbar padding>
+    <ion-item>
+      <ion-label position="floating">Type your comment...</ion-label>
+      <ion-input #commentInput (keydown.enter)="sendComment()"></ion-input>
+    </ion-item>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="sendComment()">
+        <ion-icon name="send-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
+
+<ng-template #loader>
+  <ion-content [fullscreen]="true">
+    <ion-list>
+      <ion-item *ngFor="let i of [1,2,3,4,5,6,7,8,9,0]">
+        <ion-avatar slot="start">
+          <ion-skeleton-text animated></ion-skeleton-text>
+        </ion-avatar>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ng-template>

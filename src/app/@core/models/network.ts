@@ -1,4 +1,5 @@
-declare module Network {
+// tslint:disable-next-line: no-namespace
+declare namespace Network {
 
   export interface Account {
     id: string;
@@ -27,19 +28,19 @@ declare module Network {
   }
 
   export interface Company {
-    id: string;
-    name: string;
+    id?: string;
+    name?: string;
     members?: any[];
     locations?: any[];
   }
 
   export interface User {
-    id: string;
-    login: string;
-    firstName: string;
-    lastName: string;
-    imageUrl: string;
-    email: string;
+    id?: string;
+    login?: string;
+    firstName?: string;
+    lastName?: string;
+    imageUrl?: string;
+    email?: string;
   }
 
   export interface Invitee {

@@ -250,4 +250,27 @@ export class DataService {
         }),
       );
   }
+
+  sendComment(orderId: string, params?: any) {
+    return this.http
+      .post<Order.Comment[]>(`${environment.api_url}/orders/${orderId}/comments`, {
+        orderId,
+        text:  params.text,
+        mentions : params.mentions
+      })
+      .pipe(
+        catchError((err) => {
+          this.toastController
+            .create({
+              message: err.message,
+              color: 'danger',
+              duration: 2000
+            })
+            .then((toast) => {
+              toast.present();
+            });
+          return throwError(err);
+        }),
+      );
+  }
 }

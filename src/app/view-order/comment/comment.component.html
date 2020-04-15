@@ -1,0 +1,15 @@
+<ion-item>
+  <ion-avatar slot="start">
+    <img [src]="comment.user.imageUrl || '/assets/no-avatar.png'" (error)="comment.user.imageUrl='/assets/no-avatar.png'">
+  </ion-avatar>
+  <ion-label class="ion-text-wrap">
+    <h2>
+      {{comment.user.login}}
+      <span class="date">
+        <ion-note>{{ comment.createdDate|date:"yyyy-MM-dd HH:mm"}}</ion-note>
+      </span>
+    </h2>
+    <h3>{{comment.company.name}}</h3>
+    <div>{{comment.text}}</div>
+  </ion-label>
+</ion-item>
