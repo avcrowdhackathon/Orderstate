@@ -10,6 +10,7 @@ import { DataService } from '../@core/services/data.service';
 })
 export class ViewOrderPage implements OnInit {
 
+  orderId: string;
   order: Order.Order;
   currentPage = 'milestones';
   comments: Order.Comment[];
@@ -17,22 +18,55 @@ export class ViewOrderPage implements OnInit {
   @ViewChild('commentInput', { static: false }) commentInput;
   @ViewChild('commentsList', { static: false }) commentsList;
 
+  dividers = {};
+
+  get nextMilestone(): Order.Milestone {
+    if (!this.order.mileStones || !this.order.mileStones.length) { return null; }
+
+    const activeMilestones = this.order.mileStones.filter(m => !m.finished);
+    if (activeMilestones.length) {
+      return activeMilestones[0];
+    }
+    return null;
+  }
+
+  get nextStatus() {
+    if (this.nextMilestone.finished) {
+      return null;
+    }
+    if (this.nextMilestone.started) {
+      return {
+        label: 'COMPLETE',
+        color: 'success'
+      };
+    }
+    return {
+      label: 'CONFIRM',
+      color: 'secondary'
+    };
+  }
+
   constructor(
-    private data: DataService,
-    private auth: AuthService,
+    private dataService: DataService,
+    private authService: AuthService,
     private activatedRoute: ActivatedRoute
   ) { }
 
   async ngOnInit() {
-    const id = this.activatedRoute.snapshot.paramMap.get('id');
-    this.order = await this.data.getOrder(id).toPromise();
+    this.orderId = this.activatedRoute.snapshot.paramMap.get('id');
+    await this.loadOrder();
+  }
+
+  async loadOrder() {
+    this.order = await this.dataService.getOrder(this.orderId).toPromise();
   }
 
   async loadComments(event = null) {
-    this.comments = await this.data
+    this.comments = await this.dataService
       .getComments(this.order.id)
       .toPromise()
       .then((comments) => comments.sort((a, b) => a.createdDate > b.createdDate ? 1 : -1));
+    this.calculateDividers();
     if (event) { event.detail.complete(); }
     setTimeout(() => {
       this.commentsList.scrollToBottom(300);
@@ -55,11 +89,11 @@ export class ViewOrderPage implements OnInit {
     this.comments.push({
       text,
       user: {
-        login: this.auth.user.login,
-        imageUrl: this.auth.user.imageUrl
+        login: this.authService.user.login,
+        imageUrl: this.authService.user.imageUrl
       },
       company: {
-        name: this.auth.user.company.name
+        name: this.authService.user.company.name
       },
       createdDate: new Date(),
     });
@@ -67,7 +101,7 @@ export class ViewOrderPage implements OnInit {
       this.commentsList.scrollToBottom(300);
     }, 300);
     this.commentInput.setFocus();
-    await this.data
+    await this.dataService
       .sendComment(this.order.id, { text })
       .toPromise();
     await this.loadComments();
@@ -88,5 +122,35 @@ export class ViewOrderPage implements OnInit {
     const win = window as any;
     const mode = win && win.Ionic && win.Ionic.mode;
     return mode === 'ios' ? 'Inbox' : '';
+  }
+
+  async save() {
+    this.order = await this.dataService.updateOrder(this.order).toPromise();
+    // await this.loadOrder();
+  }
+
+  async toggleNextStatus() {
+    switch (this.nextStatus.label) {
+      case 'CONFIRM':
+        this.nextMilestone.started = true;
+        this.nextMilestone.finished = false;
+        await this.save();
+        break;
+      case 'COMPLETE':
+        this.nextMilestone.started = true;
+        this.nextMilestone.finished = true;
+        await this.save();
+        break;
+    }
+  }
+
+  private calculateDividers() {
+    this.dividers = this.comments.reduce((l, i) => {
+      const d = new Date(i.createdDate);
+      const df = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+      const com = Object.keys(l).find(x => l[x] === df);
+      if (!com) { l[i.id] = df; }
+      return l;
+    }, {});
   }
 }

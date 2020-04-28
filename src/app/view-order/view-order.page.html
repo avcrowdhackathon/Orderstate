@@ -15,9 +15,9 @@
     <ion-segment-button value="comments">
       Comments
     </ion-segment-button>
-    <ion-segment-button value="activity">
+    <!-- <ion-segment-button value="activity">
       Activity
-    </ion-segment-button>
+    </ion-segment-button> -->
   </ion-segment>
 </ion-toolbar>
 
@@ -26,7 +26,7 @@
   <ion-content *ngIf="currentPage === 'milestones'" [fullscreen]="true">
     <ion-card color="light">
       <ion-card-header>
-        <ion-card-subtitle>{{ order.id }}</ion-card-subtitle>
+        <ion-card-subtitle>ID: {{ order.id }}</ion-card-subtitle>
         <ion-card-title>Order Details</ion-card-title>
       </ion-card-header>
       <ion-card-content>
@@ -35,7 +35,7 @@
     </ion-card>
     <ion-list>
       <ng-container *ngFor="let ms of order.mileStones">
-        <app-milestone [milestone]="ms" [participants]="order.participants"></app-milestone>
+        <app-milestone [milestone]="ms" [participants]="order.participants" (save)="save()"></app-milestone>
       </ng-container>
     </ion-list>
   </ion-content>
@@ -47,7 +47,7 @@
     <ng-container *ngIf="comments;else loader">
       <ion-list>
         <ng-container *ngFor="let comment of comments; trackBy:commentsTrackBy">
-          <app-comment [comment]="comment"></app-comment>
+          <app-comment [comment]="comment" [showDivider]="dividers[comment.id]"></app-comment>
         </ng-container>
       </ion-list>
     </ng-container>
@@ -58,10 +58,12 @@
   </ion-content>
 </ng-container>
 
-<ion-footer *ngIf="currentPage === 'milestones'">
-  <ion-button expand="block" size="large" fill="solid" color="success">
-    <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
-    Finished
+<ion-footer *ngIf="currentPage === 'milestones' && order && nextMilestone">
+  <ion-button class="status-action" expand="block" size="large" fill="solid" [color]="nextStatus.color" (click)="toggleNextStatus()">
+   <div>
+     {{nextStatus.label}} <br>
+     <small>{{nextMilestone.name}}</small>
+    </div>
   </ion-button>
 </ion-footer>
 

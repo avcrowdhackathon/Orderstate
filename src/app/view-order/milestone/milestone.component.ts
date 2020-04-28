@@ -1,26 +1,24 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ActionSheetController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-milestone',
   templateUrl: './milestone.component.html',
   styleUrls: ['./milestone.component.scss'],
 })
-export class MilestoneComponent implements OnInit {
+export class MilestoneComponent {
 
   @Input() milestone: Order.Milestone;
   @Input() participants: Order.Participant[];
+
+  @Output() save = new EventEmitter();
 
   get status() {
     if (this.milestone.finished) {
       return {
         icon: 'checkmark-circle-outline',
         color: 'success'
-      };
-    }
-    if (this.milestone.overdue) {
-      return {
-        icon: 'time-outline',
-        color: 'danger'
       };
     }
     if (this.milestone.started) {
@@ -42,8 +40,47 @@ export class MilestoneComponent implements OnInit {
 
   }
 
-  constructor() { }
+  constructor(
+    private actionSheetController: ActionSheetController,
+  ) { }
 
-  ngOnInit() { }
+  switchStatus(status) {
+    switch (status) {
+      case 'pending':
+        this.milestone.started = false;
+        this.milestone.finished = false;
+        this.save.emit();
+        break;
+      case 'confirm':
+        this.milestone.started = true;
+        this.milestone.finished = false;
+        this.save.emit();
+        break;
+      case 'complete':
+        this.milestone.started = true;
+        this.milestone.finished = true;
+        this.save.emit();
+        break;
+    }
+    return true;
+  }
 
+  async openStatusSheet() {
+    const actionSheet = await this.actionSheetController.create({
+      header: `Status: ${this.milestone.name}`,
+      buttons: [
+        { text: 'Pending', icon: 'time-outline', handler: () => this.switchStatus('pending') },
+        { text: 'Confirmed', icon: 'flag-outline', handler: () => this.switchStatus('confirm') },
+        { text: 'Completed', icon: 'checkmark-circle-outline', handler: () => this.switchStatus('complete') },
+        {
+          text: 'Cancel',
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }]
+    });
+    await actionSheet.present();
+  }
 }

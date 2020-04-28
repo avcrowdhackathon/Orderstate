@@ -34,7 +34,7 @@
     <ng-container *ngIf="orders;else ordersLoading">
       <ng-container *ngIf="orders.length;else noOrders">
         <ng-container *ngFor="let order of orders">
-          <app-order-item [order]="order"></app-order-item>
+          <app-order-item [order]="order" [showDivider]="dividers[order.id]"></app-order-item>
         </ng-container>
       </ng-container>
     </ng-container>

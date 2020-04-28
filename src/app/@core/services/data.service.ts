@@ -55,6 +55,25 @@ export class DataService {
       );
   }
 
+  updateOrder(order: Order.Order) {
+    return this.http
+      .put<Order.Order>(`${environment.api_url}/orders`, order)
+      .pipe(
+        catchError((err) => {
+          this.toastController
+            .create({
+              message: err.message,
+              color: 'danger',
+              duration: 2000
+            })
+            .then((toast) => {
+              toast.present();
+            });
+          return throwError(err);
+        }),
+      );
+  }
+
   getOrders(params: Order.SearchParams) {
 
     const p = {
@@ -64,7 +83,7 @@ export class DataService {
         sort: 'lastModifiedDate,desc',
       }, ...params,
     };
-console.log(p)
+
     let search = '';
 
     if (params.term) {
@@ -255,8 +274,8 @@ console.log(p)
     return this.http
       .post<Order.Comment[]>(`${environment.api_url}/orders/${orderId}/comments`, {
         orderId,
-        text:  params.text,
-        mentions : params.mentions
+        text: params.text,
+        mentions: params.mentions
       })
       .pipe(
         catchError((err) => {

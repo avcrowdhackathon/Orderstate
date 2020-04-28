@@ -17,8 +17,11 @@ export class HomePage implements OnInit, AfterViewInit {
   orders: Order.Order[] = null;
   params: Order.SearchParams = {
     page: 0,
-    size: 20
+    size: 20,
+    status: 'Active'
   };
+
+  dividers = {};
 
   get username() {
     return this.authService.user.firstName;
@@ -38,12 +41,14 @@ export class HomePage implements OnInit, AfterViewInit {
   async ngOnInit() {
     this.params.page = 0;
     this.orders = await this.dataService.getOrders(this.params).toPromise();
+    this.calculateDividers();
     this.infiniteScroll.disabled = false;
   }
 
   async refresh(ev) {
     this.params.page = 0;
     this.orders = await this.dataService.getOrders(this.params).toPromise();
+    this.calculateDividers();
     ev.detail.complete();
     this.infiniteScroll.disabled = false;
   }
@@ -56,6 +61,7 @@ export class HomePage implements OnInit, AfterViewInit {
     }
     this.params.page = 0;
     this.orders = await this.dataService.getOrders(this.params).toPromise();
+    this.calculateDividers();
     return true;
   }
 
@@ -111,6 +117,7 @@ export class HomePage implements OnInit, AfterViewInit {
     this.params.term = event.target.value;
     this.params.page = 0;
     this.orders = await this.dataService.getOrders(this.params).toPromise();
+    this.calculateDividers();
     this.infiniteScroll.disabled = false;
   }
 
@@ -118,6 +125,7 @@ export class HomePage implements OnInit, AfterViewInit {
     this.params.page++;
     const newOrders = await this.dataService.getOrders(this.params).toPromise();
     this.orders = this.orders.concat(newOrders);
+    this.calculateDividers();
     setTimeout(() => {
       event.target.complete();
       if (newOrders.length < this.params.size) {
@@ -126,7 +134,14 @@ export class HomePage implements OnInit, AfterViewInit {
     }, 500);
   }
 
-  async logout() {
+  private calculateDividers() {
+    this.dividers = this.orders.reduce((l, i) => {
+      const d = new Date(i.createdDate);
+      const df = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+      const ord = Object.keys(l).find(x => l[x] === df);
+      if (!ord) { l[i.id] = df; }
+      return l;
+    }, {});
   }
 
 }
