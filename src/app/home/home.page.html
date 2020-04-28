@@ -2,7 +2,7 @@
   <ion-toolbar color="primary">
     <ion-title>Orderstate</ion-title>
     <ion-buttons slot="secondary">
-      <ion-button (click)="presentActionSheet()">
+      <ion-button (click)="openUserSheet()">
         <ion-icon slot="icon-only" name="person-circle"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -19,6 +19,13 @@
 </ion-toolbar>
 
 <ion-content [fullscreen]="true">
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openFilterSheet()">
+      <ion-icon name="filter-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
   <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>

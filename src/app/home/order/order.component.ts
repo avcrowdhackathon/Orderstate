@@ -31,4 +31,12 @@ export class OrderComponent {
     if (this.order.status === 'ACTIVE') { return 'active'; }
     return 'uknown';
   }
+
+  get nextStatus() {
+
+  }
+
+  switchNextStatus() {
+
+  }
 }

@@ -64,7 +64,7 @@ export class DataService {
         sort: 'lastModifiedDate,desc',
       }, ...params,
     };
-
+console.log(p)
     let search = '';
 
     if (params.term) {

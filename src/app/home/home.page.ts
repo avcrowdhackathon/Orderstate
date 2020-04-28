@@ -48,7 +48,38 @@ export class HomePage implements OnInit, AfterViewInit {
     this.infiniteScroll.disabled = false;
   }
 
-  async presentActionSheet() {
+  async loadStatus(status) {
+    if (status === null) {
+      delete this.params.status;
+    } else {
+      this.params.status = status;
+    }
+    this.params.page = 0;
+    this.orders = await this.dataService.getOrders(this.params).toPromise();
+    return true;
+  }
+
+  async openFilterSheet() {
+    const actionSheet = await this.actionSheetController.create({
+      header: `Filter orders`,
+      buttons: [
+        { text: 'All orders', handler: () => this.loadStatus(null) },
+        { text: 'Draft', handler: () => this.loadStatus('Draft') },
+        { text: 'Active', handler: () => this.loadStatus('Active') },
+        { text: 'Delivered', handler: () => this.loadStatus('Delivered') },
+        {
+          text: 'Cancel',
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }]
+    });
+    await actionSheet.present();
+  }
+
+  async openUserSheet() {
     const actionSheet = await this.actionSheetController.create({
       header: `Welcome ${this.username}`,
       buttons: [{
