@@ -1,6 +1,6 @@
 {
   "appId": "com.orderstate.mobile",
-  "appName": "Orderstate",
+  "appName": "orderstate",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
