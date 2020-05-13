@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LoadingController, ToastController } from '@ionic/angular';
 import { AuthService } from '../@core/services/auth.service';
 
 @Component({
@@ -8,42 +9,53 @@ import { AuthService } from '../@core/services/auth.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
-  loginForm;
+  loginForm: any;
   err: any;
-  loading: boolean;
 
   constructor(
     private authService: AuthService,
     private formBuilder: FormBuilder,
     private router: Router,
+    private loadingController: LoadingController,
+    private toastController: ToastController
   ) {
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
       password: ['', Validators.required],
     });
-    this.loginForm.controls.username.setValue('emma');
-    this.loginForm.controls.password.setValue('user');
   }
-
-  ngOnInit() {
-  }
-
 
   async onSubmit(credentials) {
     this.err = null;
-    this.loading = true;
+
+    const loading = await this.loadingController.create({
+      message: 'Please wait...',
+      animated: true,
+    });
+    await loading.present();
+
     const resp = await this.authService
       .login(credentials)
       .catch((r) => {
         this.err = r.error;
+
       });
 
     this.loginForm.reset();
-    this.loading = false;
+
     if (resp) {
       await this.router.navigate(['/home']);
+      await loading.dismiss();
+    } else {
+      await loading.dismiss();
+      const toast = await this.toastController.create({
+        message: 'Wrong credentials',
+        duration: 2000,
+        color: 'danger',
+      });
+      await toast.present();
     }
   }
 

@@ -14,10 +14,11 @@ export class AnonGuard implements CanActivate {
     public router: Router,
   ) { }
 
-  canActivate(): boolean {
-    if (this.auth.isAuthenticated()) {
-      this.router.navigate(['/']);
-      return false;
+  async canActivate() {
+    const auth = await this.auth.isAuthenticated();
+    if (auth) {
+      console.log('authorized');
+      return this.router.parseUrl('/home');
     }
     return true;
   }

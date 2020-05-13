@@ -23,4 +23,4 @@ import { OrderComponent } from './order/order.component';
     HomePage,
   ]
 })
-export class HomePageModule { }
+export class HomePageModule {}

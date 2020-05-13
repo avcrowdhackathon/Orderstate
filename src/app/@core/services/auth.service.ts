@@ -1,23 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { Router } from '@angular/router';
 import { Plugins } from '@capacitor/core';
 import { environment } from '../../../environments/environment';
 
 const { Storage } = Plugins;
 
-@Injectable({ providedIn: 'root' })
-export class AuthResolver implements Resolve<void> {
-  // constructor(private authService: AuthService) { }
-
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    return;// this.authService.setup();
-  }
-}
-
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({  providedIn: 'root'})
 export class AuthService {
 
   token: any;
@@ -32,7 +21,6 @@ export class AuthService {
   async setup() {
     const ret = await Storage.get({ key: 'token' });
     this.token = JSON.parse(ret.value);
-    console.log(this.token);
     if (this.token) {
       this.user = await this.http
         .get<Network.Account>(environment.api_url + '/account')
@@ -41,8 +29,9 @@ export class AuthService {
     }
   }
 
-  isAuthenticated() {
-    console.log('is?', !!this.token);
+  async isAuthenticated() {
+    const ret = await Storage.get({ key: 'token' });
+    this.token = JSON.parse(ret.value);
     return !!this.token;
   }
 

@@ -55,31 +55,50 @@ export class DataService {
       );
   }
 
+  updateOrder(order: Order.Order) {
+    return this.http
+      .put<Order.Order>(`${environment.api_url}/orders`, order)
+      .pipe(
+        catchError((err) => {
+          this.toastController
+            .create({
+              message: err.message,
+              color: 'danger',
+              duration: 2000
+            })
+            .then((toast) => {
+              toast.present();
+            });
+          return throwError(err);
+        }),
+      );
+  }
+
   getOrders(params: Order.SearchParams) {
 
     const p = {
       ...{
         page: '0',
-        size: '30',
-        sort: 'me.orderId,desc',
+        size: '10',
+        sort: 'lastModifiedDate,desc',
       }, ...params,
     };
 
-    let _search = '';
+    let search = '';
 
     if (params.term) {
-      _search = `/_search/${params.term}`;
+      search = `/_search/${params.term}`;
     }
 
-
+    const c = {};
     for (const propName in p) {
-      if (p[propName] === null || p[propName] === undefined) {
-        delete p[propName];
+      if (p[propName] !== null && p[propName] !== undefined) {
+        c[propName] = p[propName].toString();
       }
     }
 
     return this.http
-      .get<Order.Order[]>(`${environment.api_url}/orders${_search}`, { params: p })
+      .get<Order.Order[]>(`${environment.api_url}/orders${search}`, { params: c })
       .pipe(
         catchError((err) => {
           this.toastController
@@ -235,6 +254,29 @@ export class DataService {
   getComments(orderId: string, params?: any) {
     return this.http
       .get<Order.Comment[]>(`${environment.api_url}/orders/${orderId}/comments?page=0&size=1000&sort=createdAt,desc`)
+      .pipe(
+        catchError((err) => {
+          this.toastController
+            .create({
+              message: err.message,
+              color: 'danger',
+              duration: 2000
+            })
+            .then((toast) => {
+              toast.present();
+            });
+          return throwError(err);
+        }),
+      );
+  }
+
+  sendComment(orderId: string, params?: any) {
+    return this.http
+      .post<Order.Comment[]>(`${environment.api_url}/orders/${orderId}/comments`, {
+        orderId,
+        text: params.text,
+        mentions: params.mentions
+      })
       .pipe(
         catchError((err) => {
           this.toastController

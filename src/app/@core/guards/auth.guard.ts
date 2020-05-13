@@ -14,10 +14,11 @@ export class AuthGuard implements CanActivate {
     public router: Router,
   ) { }
 
-  canActivate(): boolean {
-    if (!this.auth.isAuthenticated()) {
-      this.router.navigate(['login']);
-      return false;
+  async canActivate() {
+    const auth = await this.auth.isAuthenticated();
+    if (!auth) {
+      console.log('not authorized');
+      return this.router.parseUrl('/login');
     }
     return true;
   }
